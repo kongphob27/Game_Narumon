@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>สื่อการสอน ภารกิจเลี้ยงสัตว์ทะเลตัวน้อย</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        body {
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            background: #020b1e;
+            color: #ffffff;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Language Switcher Floating Bar --- */
+        .lang-switch-bar {
+            position: fixed;
+            top: 14px;
+            right: 14px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 5px 8px;
+            border-radius: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .lang-btn {
+            background: transparent;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #1e3a8a;
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(255, 154, 158, 0.4);
+        }
+
+        /* --- 0. หน้าแรก (Welcome Screen) --- */
+        #viewWelcome {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
+            color: #1e3a8a;
+            text-align: center;
+            padding: 20px;
+        }
+        #viewWelcome.active {
+            display: flex;
+        }
+        .welcome-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            max-width: 500px;
+            border: 6px dashed #ffb6c1;
+            position: relative;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+        .welcome-box:hover {
+            transform: scale(1.02);
+        }
+        .welcome-box h1 {
+            font-size: 20px; /* Reduced font size */
+            margin-bottom: 15px;
+            color: #d81b60;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(255, 182, 193, 0.5);
+            white-space: pre-line; /* Allow newlines from data-i18n */
+        }
+        .welcome-box p {
+            font-size: 16px; /* Reduced font size */
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #4a4a4a;
+            font-weight: 600;
+            white-space: pre-line; /* Allow newlines */
+        }
+        .btn-ok {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #d81b60;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            padding: 14px 60px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 154, 158, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-ok:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 10px rgba(255, 154, 158, 0.4);
+        }
+        .decor-fish {
+            position: absolute;
+            font-size: 45px;
+            top: -30px;
+            left: -20px;
+            transform: rotate(-15deg);
+            animation: float 3s ease-in-out infinite;
+        }
+        .decor-star {
+            position: absolute;
+            font-size: 45px;
+            bottom: -25px;
+            right: -20px;
+            transform: rotate(15deg);
+            animation: float 3s ease-in-out infinite reverse;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-15deg); }
+            50% { transform: translateY(-15px) rotate(-5deg); }
+            100% { transform: translateY(0px) rotate(-15deg); }
+        }
+
+        /* --- 1. หน้าจอวาดรูป Studio --- */
+        #viewDraw {
+            display: none;
+            padding: 55px 16px 80px 16px;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #a1c4fd 50%, #c2e9fb 75%, #d4fc79 100%);
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        #viewDraw.active {
+            display: flex;
+        }
+
+        .header-box {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .main-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #d81b60;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.9);
+        }
+        .prompt-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4338ca;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.9);
+        }
+
+        .type-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+            max-width: 100%;
+            padding: 4px 2px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        .type-selector::-webkit-scrollbar { display: none; }
+        .type-btn {
+            background: rgba(255, 255, 255, 0.8);
+            color: #d81b60;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .type-btn.active {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #d81b60;
+            border-color: #ffb6c1;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 154, 158, 0.4);
+        }
+
+        .tool-selector {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 6px;
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        .tool-btn {
+            background: rgba(255,255,255,0.8);
+            color: #d81b60;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+        .tool-btn.active {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: #f8fafc;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+        }
+        .tool-btn-undo {
+            background: rgba(239, 68, 68, 0.8);
+            color: #fff;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .tool-btn-undo:active {
+            transform: scale(0.92);
+        }
+
+        .canvas-card {
+            background: #ffffff;
+            border-radius: 30px;
+            padding: 10px;
+            box-shadow: 0 14px 35px rgba(255, 182, 193, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 5px dashed #ffb6c1;
+        }
+        canvas#canvasDraw {
+            width: 290px;
+            height: 290px;
+            background: #ffffff;
+            border-radius: 20px;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .palette-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0 6px 0;
+            max-width: 320px;
+            background: rgba(255,255,255,0.5);
+            padding: 8px 12px;
+            border-radius: 30px;
+            border: 2px solid rgba(255,255,255,0.8);
+        }
+        .color-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.9);
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .color-dot.active {
+            transform: scale(1.2);
+            border-color: #ff69b4;
+            box-shadow: 0 0 12px rgba(255, 105, 180, 0.6);
+        }
+        .color-more-btn {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .action-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 14px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Mali', 'Noto Sans SC', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.1s;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-clear {
+            background: rgba(255, 255, 255, 0.9);
+            color: #d81b60;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: #d81b60;
+            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.5);
+        }
+        .btn-goto-aqua {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: #1e3a8a;
+            box-shadow: 0 4px 15px rgba(161, 196, 253, 0.5);
+        }
+
+        /* Modal จัดการสี */
+        .color-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 5, 20, 0.88);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .color-modal.active { display: flex; }
+        .color-modal-box {
+            background: #ffffff;
+            color: #d81b60;
+            border: 5px solid #ffb6c1;
+            border-radius: 30px;
+            padding: 20px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .color-modal-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+            max-height: 320px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .grid-color-item {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .grid-color-item:active {
+            transform: scale(1.25);
+            border-color: #ff69b4;
+        }
+
+        /* Loading AI Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+            color: #d81b60;
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 182, 193, 0.4);
+            border-top-color: #ff69b4;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- 2. หน้าจออควาเรียม --- */
+        #viewAqua {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #c2e9fb;
+            overflow: hidden;
+            touch-action: none;
+        }
+        #viewAqua.active { display: block; }
+
+        #canvasAqua {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            touch-action: none;
+            cursor: grab;
+        }
+        #canvasAqua:active { cursor: grabbing; }
+
+        .aqua-hud {
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 10px 18px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+            z-index: 10;
+            color: #d81b60;
+            box-shadow: 0 4px 15px rgba(255, 182, 193, 0.4);
+        }
+        .aqua-hud h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .aqua-hud p {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .drag-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            padding: 10px 16px;
+            border-radius: 24px;
+            font-size: 13px;
+            color: #d81b60;
+            font-weight: 600;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
+            max-width: 60vw;
+        }
+
+        .aqua-controls {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            z-index: 10;
+        }
+        .aqua-controls .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #ff9a9e;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 10px 25px rgba(255, 154, 158, 0.5);
+            transition: transform 0.3s ease;
+            z-index: 2000;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Language Selector Floating Header & Music Toggle -->
+    <div class="lang-switch-bar">
+        <button class="lang-btn" id="btnMusic" onclick="toggleMusic()" style="font-size: 16px; padding: 4px 6px; margin-right: 6px;">🔇</button>
+        <button class="lang-btn active" onclick="setLanguage('th', this)">🇹🇭 TH</button>
+        <button class="lang-btn" onclick="setLanguage('en', this)">🇬🇧 EN</button>
+        <button class="lang-btn" onclick="setLanguage('zh', this)">🇨🇳 中文</button>
+    </div>
+
+    <div id="toast" class="toast">✨ ปล่อยลงตู้ปลาเรียบร้อย!</div>
+
+    <!-- Modal จัดการสี -->
+    <div id="colorModal" class="color-modal">
+        <div class="color-modal-box">
+            <h3 style="font-size: 20px; margin-bottom: 4px;" data-i18n="modalColorTitle">🎨 เลือกสีที่ต้องการ</h3>
+            <p style="font-size: 14px; color: #ff69b4;" data-i18n="modalColorDesc">คลิกเลือกสีเพื่อนำไปวาดภาพ</p>
+            <div class="color-modal-grid" id="colorGrid"></div>
+            <button class="btn btn-clear" style="width: 100%; margin-top: 8px; border: 2px solid #ffb6c1;" onclick="closeColorModal()" data-i18n="btnClose">ปิดหน้าต่าง</button>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="font-size: 20px; margin-bottom: 6px;" data-i18n="loadingTitle">✨ ระบบกำลังเนรมิตชีวิต...</h3>
+        <p style="font-size: 15px; color: #ff69b4;" data-i18n="loadingDesc">รอแป๊บนึงนะ สัตว์ทะเลของน้องๆ กำลังจะเกิดแล้ว</p>
+    </div>
+
+    <!-- 0. Welcome Screen (สื่อการสอน) -->
+    <div id="viewWelcome" class="view active">
+        <div class="welcome-box">
+            <div class="decor-fish">🐠</div>
+            <div class="decor-star">⭐</div>
+            
+            <!-- คุณครูผู้หญิงน่ารัก ชุดราชการ (SVG) -->
+            <div style="display:flex; justify-content:center; margin-bottom: 15px;">
+                <svg width="130" height="130" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="95" fill="#fdf4ff" stroke="#fbcfe8" stroke-width="5"/>
+                    <path d="M 50 80 C 40 140, 60 180, 100 180 C 140 180, 160 140, 150 80 Z" fill="#1e293b"/>
+                    <path d="M 60 140 L 140 140 L 160 200 L 40 200 Z" fill="#d4b483"/>
+                    <path d="M 100 140 L 100 200" stroke="#b48c59" stroke-width="2"/>
+                    <path d="M 80 140 L 100 160 L 120 140 Z" fill="#fde68a"/>
+                    <rect x="90" y="120" width="20" height="30" fill="#fcd34d"/>
+                    <circle cx="100" cy="90" r="40" fill="#fcd34d"/>
+                    <path d="M 60 90 C 60 40, 140 40, 140 90 C 130 50, 70 50, 60 90 Z" fill="#1e293b"/>
+                    <circle cx="85" cy="85" r="4" fill="#000"/>
+                    <circle cx="115" cy="85" r="4" fill="#000"/>
+                    <ellipse cx="75" cy="95" rx="6" ry="3" fill="#f87171" opacity="0.6"/>
+                    <ellipse cx="125" cy="95" rx="6" ry="3" fill="#f87171" opacity="0.6"/>
+                    <path d="M 90 105 Q 100 115 110 105" stroke="#000" stroke-width="2.5" fill="transparent" stroke-linecap="round"/>
+                    <circle cx="100" cy="40" r="22" fill="#1e293b"/>
+                </svg>
+            </div>
+
+            <h1 data-i18n="welcomeTitle">ยินดีต้อนรับสู่<br>สื่อการสอนวิชาทัศนศิลป์ 🎨</h1>
+            <p data-i18n="welcomeAuthor">โดยคุณครูนฤมล ศิริพัฒน์<br>โรงเรียนนานาชาติตากสินแกลง<br>อำเภอแกลง จังหวัดระยอง</p>
+            <button class="btn-ok" onclick="startGame()" data-i18n="btnStart">เริ่มสนุกกันเลย! 💖</button>
+        </div>
+    </div>
+
+    <!-- 1. หน้าจอวาดรูป Studio -->
+    <div id="viewDraw" class="view">
+        <div class="header-box">
+            <div class="main-title" data-i18n="studioTitle">สื่อการสอนเรื่อง ภารกิจเลี้ยงสัตว์ทะเลตัวน้อย</div>
+            <div class="prompt-title" id="promptDisplay">🐟 วาดปลาการ์ตูนแสนซน</div>
+        </div>
+
+        <div class="type-selector">
+            <button class="type-btn active" id="btn-type-fish" onclick="selectCreature('fish', '#f97316', this)">🐟 ปลาการ์ตูน</button>
+            <button class="type-btn" id="btn-type-turtle" onclick="selectCreature('turtle', '#10b981', this)">🐢 เต่าทะเล</button>
+            <button class="type-btn" id="btn-type-blowfish" onclick="selectCreature('blowfish', '#eab308', this)">🐡 ปลาปักเป้า</button>
+            <button class="type-btn" id="btn-type-shark" onclick="selectCreature('shark', '#3b82f6', this)">🦈 ฉลามน้อย</button>
+            <button class="type-btn" id="btn-type-octopus" onclick="selectCreature('octopus', '#ec4899', this)">🐙 ปลาหมึก</button>
+            <button class="type-btn" id="btn-type-crab" onclick="selectCreature('crab', '#ef4444', this)">🦀 ปูทะเล</button>
+            <button class="type-btn" id="btn-type-jellyfish" onclick="selectCreature('jellyfish', '#d8b4fe', this)">🪼 แมงกะพรุน</button>
+        </div>
+
+        <div class="tool-selector">
+            <button class="tool-btn active" id="tool-crayon" onclick="selectBrush('crayon', this)" data-i18n="toolCrayon">🖍️ สีเทียน</button>
+            <button class="tool-btn" id="tool-pencil" onclick="selectBrush('pencil', this)" data-i18n="toolPencil">✏️ สีไม้</button>
+            <button class="tool-btn" id="tool-watercolor" onclick="selectBrush('watercolor', this)" data-i18n="toolWatercolor">🎨 สีน้ำ</button>
+            <button class="tool-btn" id="tool-eraser" onclick="selectBrush('eraser', this)" data-i18n="toolEraser">🧽 ยางลบ</button>
+            <button class="tool-btn tool-btn-undo" onclick="undoDrawing()" data-i18n="toolUndo">↩️ ย้อนกลับ</button>
+        </div>
+
+        <div class="canvas-card">
+            <canvas id="canvasDraw" width="500" height="500"></canvas>
+        </div>
+
+        <div class="palette-row">
+            <div class="color-dot active" style="background:#f97316;" onclick="setColor('#f97316', this)"></div>
+            <div class="color-dot" style="background:#eab308;" onclick="setColor('#eab308', this)"></div>
+            <div class="color-dot" style="background:#10b981;" onclick="setColor('#10b981', this)"></div>
+            <div class="color-dot" style="background:#3b82f6;" onclick="setColor('#3b82f6', this)"></div>
+            <div class="color-dot" style="background:#ef4444;" onclick="setColor('#ef4444', this)"></div>
+            <button class="color-more-btn" onclick="openColorModal()" data-i18n="btnMoreColors">🎨 จานสีเพิ่ม</button>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-submit" onclick="generateAndSendToAquarium()" data-i18n="btnSubmitFish">✨ เสกให้มีชีวิต & ส่งเข้าตู้ปลา</button>
+            <button class="btn btn-goto-aqua" onclick="switchView('viewAqua')" data-i18n="btnGoToAqua">🌊 ส่องตู้ปลา (ลากเล่นได้)</button>
+            <button class="btn btn-clear" onclick="clearCanvas()" data-i18n="btnClearCanvas">🗑 ล้างกระดาน</button>
+        </div>
+    </div>
+
+    <!-- 2. หน้าจออควาเรียม (Interactive Drag & Drop) -->
+    <div id="viewAqua" class="view">
+        <div class="aqua-hud">
+            <h1 data-i18n="aquaTitle">🌊 ตู้ปลาหรรษา</h1>
+            <p><span data-i18n="aquaCountLabel">สมาชิกในตู้:</span> <span id="creatureCount">0</span> <span data-i18n="aquaUnit">ตัว</span></p>
+        </div>
+
+        <div class="drag-hint" data-i18n="dragHint">👆 แตะลากสัตว์น้ำได้ / ดับเบิ้ลคลิกกลางตัวปลาเพื่อแก้ชื่อ / แตะที่ว่างเพื่อให้อาหาร</div>
+
+        <canvas id="canvasAqua"></canvas>
+
+        <div class="aqua-controls">
+            <button id="btnToggleMode" class="btn btn-submit" style="padding: 10px 20px; font-size:15px; background: linear-gradient(135deg, #ec4899, #db2777); border-radius: 30px; margin-bottom: 5px;" onclick="toggleMode()">ดูเป็นลายเส้น</button>
+            <div class="btn-row">
+                <button class="btn btn-clear" style="padding: 10px 16px; font-size:14px; background: rgba(255,255,255,0.8); color: #d81b60; border: 2px solid #fff;" onclick="resetAquarium()" data-i18n="btnResetAqua">ล้างตู้</button>
+                <button class="btn btn-goto-aqua" style="padding: 10px 16px; font-size:14px;" onclick="switchView('viewDraw')" data-i18n="btnAddMore">✏️ วาดเพิ่ม</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 0. BGM & MULTI-LANGUAGE ---
+        let currentLang = 'th';
+        
+        // Music Player Logic
+        let isMusicPlaying = false;
+        // เปลี่ยนเพลงบรรเลงให้สไตล์ทะเล น่ารักๆ
+        const bgm = new Audio('https://upload.wikimedia.org/wikipedia/commons/1/15/Bensound-ukulele.ogg');
+        bgm.loop = true;
+        bgm.volume = 0.35; 
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgm.pause();
+                document.getElementById('btnMusic').innerText = '🔇';
+            } else {
+                bgm.play().catch(e => console.log('BGM Play blocked', e));
+                document.getElementById('btnMusic').innerText = '🎵';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        function startGame() {
+            if (!isMusicPlaying) toggleMusic();
+            switchView('viewDraw');
+        }
+
+        const I18N = {
+            th: {
+                welcomeTitle: "ยินดีต้อนรับสู่\nสื่อการสอนวิชาทัศนศิลป์ 🎨",
+                welcomeAuthor: "โดยคุณครูนฤมล ศิริพัฒน์\nโรงเรียนนานาชาติตากสินแกลง\nอำเภอแกลง จังหวัดระยอง",
+                btnStart: "เริ่มสนุกกันเลย! 💖",
+                studioTitle: "สื่อการสอนเรื่อง ภารกิจเลี้ยงสัตว์ทะเลตัวน้อย",
+                toolCrayon: "🖍️ สีเทียน",
+                toolPencil: "✏️ สีไม้",
+                toolWatercolor: "🎨 สีน้ำ",
+                toolEraser: "🧽 ยางลบ",
+                toolUndo: "↩️ ย้อนกลับ",
+                btnMoreColors: "🎨 จานสีเพิ่ม",
+                btnSubmitFish: "✨ เสกให้มีชีวิต & ส่งเข้าตู้ปลา",
+                btnGoToAqua: "🌊 ส่องตู้ปลา (ลากเล่นได้)",
+                btnClearCanvas: "🗑 ล้างกระดาน",
+                aquaTitle: "🌊 ตู้ปลาหรรษา",
+                aquaCountLabel: "สมาชิกในตู้:",
+                aquaUnit: "ตัว",
+                dragHint: "👆 แตะลากได้ / ดับเบิ้ลคลิกกลางตัวปลาเพื่อแก้ชื่อ / แตะที่ว่างเพื่อโปรยอาหาร",
+                btnResetAqua: "ล้างตู้",
+                btnAddMore: "✏️ วาดเพิ่ม",
+                view3D: "ดูเป็น 3 มิติ",
+                viewSketch: "ดูเป็นลายเส้น",
+                modalColorTitle: "🎨 เลือกสีที่ต้องการ",
+                modalColorDesc: "คลิกเลือกสีเพื่อนำไปวาดภาพ",
+                btnClose: "ปิดหน้าต่าง",
+                loadingTitle: "✨ ระบบกำลังเนรมิตชีวิต...",
+                loadingDesc: "รอแป๊บนึงนะ สัตว์ทะเลของน้องๆ กำลังจะเกิดแล้ว",
+                toastCreated: "✨ ปล่อยลงตู้ปลาเรียบร้อย!",
+                confirmReset: "คุณต้องการล้างสัตว์น้ำทั้งหมดในตู้ปลาใช่หรือไม่?",
+                promptEditName: "แก้ไขชื่อตัวละคร:",
+                drawPrompt: "วาด{name}แสนซน",
+                lvlMax: "Max",
+                lvlKing: "King👑",
+                creatures: {
+                    fish: { name: "ปลาการ์ตูน", icon: "🐟" },
+                    turtle: { name: "เต่าทะเล", icon: "🐢" },
+                    blowfish: { name: "ปลาปักเป้า", icon: "🐡" },
+                    shark: { name: "ฉลามน้อย", icon: "🦈" },
+                    octopus: { name: "ปลาหมึก", icon: "🐙" },
+                    crab: { name: "ปูทะเล", icon: "🦀" },
+                    jellyfish: { name: "แมงกะพรุน", icon: "🪼" }
+                },
+                defaultPrefix: "น้อง"
+            },
+            en: {
+                welcomeTitle: "Welcome to\nVisual Arts Teaching Media 🎨",
+                welcomeAuthor: "By Teacher Narumon Siriphat\nTaksin Klaeng International School\nKlaeng District, Rayong",
+                btnStart: "Let's Start! 💖",
+                studioTitle: "Interactive Learning: Little Sea Creatures Mission",
+                toolCrayon: "🖍️ Crayon",
+                toolPencil: "✏️ Pencil",
+                toolWatercolor: "🎨 Watercolor",
+                toolEraser: "🧽 Eraser",
+                toolUndo: "↩️ Undo",
+                btnMoreColors: "🎨 Palette",
+                btnSubmitFish: "✨ Bring to Life & Send to Tank",
+                btnGoToAqua: "🌊 View Aquarium (Interactive)",
+                btnClearCanvas: "🗑 Clear",
+                aquaTitle: "🌊 Happy Aquarium",
+                aquaCountLabel: "Total Creatures:",
+                aquaUnit: "",
+                dragHint: "👆 Drag creatures / Double click center to rename / Tap background to feed",
+                btnResetAqua: "Clear Tank",
+                btnAddMore: "✏️ Draw More",
+                view3D: "View 3D",
+                viewSketch: "View Sketch",
+                modalColorTitle: "🎨 Choose a Color",
+                modalColorDesc: "Click a color to start drawing",
+                btnClose: "Close",
+                loadingTitle: "✨ Bringing to life...",
+                loadingDesc: "Hold on! Your ocean creature is being created.",
+                toastCreated: "✨ Released to aquarium successfully!",
+                confirmReset: "Are you sure you want to clear all creatures?",
+                promptEditName: "Edit Creature Name:",
+                drawPrompt: "Draw cute {name}",
+                lvlMax: "Max",
+                lvlKing: "King👑",
+                creatures: {
+                    fish: { name: "Clownfish", icon: "🐟" },
+                    turtle: { name: "Sea Turtle", icon: "🐢" },
+                    blowfish: { name: "Pufferfish", icon: "🐡" },
+                    shark: { name: "Little Shark", icon: "🦈" },
+                    octopus: { name: "Octopus", icon: "🐙" },
+                    crab: { name: "Sea Crab", icon: "🦀" },
+                    jellyfish: { name: "Jellyfish", icon: "🪼" }
+                },
+                defaultPrefix: ""
+            },
+            zh: {
+                welcomeTitle: "欢迎来到\n视觉艺术互动教学媒体 🎨",
+                welcomeAuthor: "授课教师：Narumon Siriphat\n达信格灵国际学校\n罗勇府格灵县",
+                btnStart: "开始体验！ 💖",
+                studioTitle: "海洋小小探险家：海洋生物养成任务",
+                toolCrayon: "🖍️ 蜡笔",
+                toolPencil: "✏️ 彩铅",
+                toolWatercolor: "🎨 水彩",
+                toolEraser: "🧽 橡皮擦",
+                toolUndo: "↩️ 撤销",
+                btnMoreColors: "🎨 调色板",
+                btnSubmitFish: "✨ 赋予生命并放入水族箱",
+                btnGoToAqua: "🌊 前往水族箱（可拖拽互动）",
+                btnClearCanvas: "🗑 清空画板",
+                aquaTitle: "🌊 欢乐水族箱",
+                aquaCountLabel: "水族成员：",
+                aquaUnit: "只",
+                dragHint: "👆 拖拽游动 / 双击生物正中心修改名字 / 点击空白投喂",
+                btnResetAqua: "清空水箱",
+                btnAddMore: "✏️ 继续绘制",
+                view3D: "查看3D效果",
+                viewSketch: "查看手绘线条",
+                modalColorTitle: "🎨 选择颜色",
+                modalColorDesc: "点击选取绘制颜色",
+                btnClose: "关闭窗口",
+                loadingTitle: "✨ 正在赋予生命中...",
+                loadingDesc: "稍等一下哦，可爱的小海洋生物马上诞生！",
+                toastCreated: "✨ 已成功放入水族箱！",
+                confirmReset: "确定要清空水族箱里的所有生物吗？",
+                promptEditName: "修改角色名字：",
+                drawPrompt: "绘制可爱的{name}",
+                lvlMax: "Max",
+                lvlKing: "King👑",
+                creatures: {
+                    fish: { name: "小丑鱼", icon: "🐟" },
+                    turtle: { name: "海龟", icon: "🐢" },
+                    blowfish: { name: "河豚", icon: "🐡" },
+                    shark: { name: "小鲨鱼", icon: "🦈" },
+                    octopus: { name: "章鱼", icon: "🐙" },
+                    crab: { name: "小螃蟹", icon: "🦀" },
+                    jellyfish: { name: "水母", icon: "🪼" }
+                },
+                defaultPrefix: "小"
+            }
+        };
+
+        function setLanguage(lang, btn) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                if (b.id !== 'btnMusic') b.classList.remove('active');
+            });
+            if (btn) btn.classList.add('active');
+
+            const t = I18N[lang];
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+
+            for (let k in t.creatures) {
+                const btnEl = document.getElementById(`btn-type-${k}`);
+                if (btnEl) btnEl.innerText = `${t.creatures[k].icon} ${t.creatures[k].name}`;
+            }
+
+            updatePromptDisplay();
+            document.getElementById('btnToggleMode').innerText = isOutlineMode ? t.view3D : t.viewSketch;
+        }
+
+        function updatePromptDisplay() {
+            const t = I18N[currentLang];
+            const cInfo = t.creatures[currentCreatureType] || t.creatures['fish'];
+            document.getElementById('promptDisplay').innerText = `${cInfo.icon} ${t.drawPrompt.replace('{name}', cInfo.name)}`;
+        }
+
+        // --- 1. การจัดการสี Modal ---
+        const ALL_COLORS = [
+            "#ff0000", "#ff4500", "#ff8c00", "#ffd700", "#adff2f", "#00ff00",
+            "#32cd32", "#00fa9a", "#00ffff", "#1e90ff", "#0000ff", "#00008b",
+            "#8a2be2", "#ff00ff", "#ff1493", "#ff69b4", "#ffb6c1", "#ffffff",
+            "#ef4444", "#f97316", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6"
+        ];
+
+        const colorGrid = document.getElementById('colorGrid');
+        ALL_COLORS.forEach(c => {
+            const dot = document.createElement('div');
+            dot.className = 'grid-color-item';
+            dot.style.backgroundColor = c;
+            dot.onclick = () => selectColorFromModal(c);
+            colorGrid.appendChild(dot);
+        });
+
+        function openColorModal() { document.getElementById('colorModal').classList.add('active'); }
+        function closeColorModal() { document.getElementById('colorModal').classList.remove('active'); }
+        function selectColorFromModal(c) {
+            setColor(c);
+            closeColorModal();
+        }
+
+        // --- 2. Canvas วาดรูป & Undo Engine ---
+        const dCanvas = document.getElementById('canvasDraw');
+        const dCtx = dCanvas.getContext('2d');
+        let isDrawing = false;
+        let currentColor = '#ff9a9e';
+        let currentCreatureType = 'fish';
+        let currentBrush = 'crayon';
+
+        let drawHistory = [];
+        const MAX_HISTORY = 20;
+
+        function saveHistory() {
+            if (drawHistory.length >= MAX_HISTORY) drawHistory.shift();
+            drawHistory.push(dCanvas.toDataURL());
+        }
+
+        function undoDrawing() {
+            if (drawHistory.length > 0) {
+                const prevImage = new Image();
+                prevImage.src = drawHistory.pop();
+                prevImage.onload = () => {
+                    dCtx.clearRect(0, 0, 500, 500);
+                    dCtx.drawImage(prevImage, 0, 0);
+                };
+            } else {
+                dCtx.clearRect(0, 0, 500, 500);
+            }
+        }
+
+        function applyBrushStyle() {
+            if (currentBrush === 'eraser') {
+                dCtx.globalCompositeOperation = 'destination-out';
+                dCtx.lineWidth = 26;
+                dCtx.lineCap = 'round';
+                dCtx.lineJoin = 'round';
+                dCtx.shadowBlur = 0;
+            } else if (currentBrush === 'pencil') {
+                dCtx.globalCompositeOperation = 'source-over';
+                dCtx.strokeStyle = currentColor;
+                dCtx.lineWidth = 6;
+                dCtx.lineCap = 'round';
+                dCtx.lineJoin = 'round';
+                dCtx.shadowBlur = 0;
+            } else if (currentBrush === 'watercolor') {
+                dCtx.globalCompositeOperation = 'source-over';
+                dCtx.strokeStyle = currentColor;
+                dCtx.lineWidth = 24;
+                dCtx.lineCap = 'round';
+                dCtx.lineJoin = 'round';
+                dCtx.shadowBlur = 8;
+                dCtx.shadowColor = currentColor;
+            } else { // crayon
+                dCtx.globalCompositeOperation = 'source-over';
+                dCtx.strokeStyle = currentColor;
+                dCtx.lineWidth = 14;
+                dCtx.lineCap = 'round';
+                dCtx.lineJoin = 'round';
+                dCtx.shadowBlur = 0;
+            }
+        }
+        applyBrushStyle();
+
+        function getPos(e) {
+            const r = dCanvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - r.left) * (500 / r.width),
+                y: (e.clientY - r.top) * (500 / r.height)
+            };
+        }
+
+        dCanvas.addEventListener('pointerdown', (e) => {
+            saveHistory();
+            isDrawing = true;
+            const pos = getPos(e);
+            applyBrushStyle();
+            dCtx.beginPath();
+            dCtx.moveTo(pos.x, pos.y);
+            dCanvas.setPointerCapture(e.pointerId);
+        });
+
+        dCanvas.addEventListener('pointermove', (e) => {
+            if (!isDrawing) return;
+            const pos = getPos(e);
+            dCtx.lineTo(pos.x, pos.y);
+            dCtx.stroke();
+        });
+
+        dCanvas.addEventListener('pointerup', () => isDrawing = false);
+        dCanvas.addEventListener('pointercancel', () => isDrawing = false);
+
+        function setColor(c, el) {
+            currentColor = c;
+            if (currentBrush === 'eraser') {
+                selectBrush('crayon', document.getElementById('tool-crayon'));
+            }
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            if (el) {
+                el.classList.add('active');
+            } else {
+                const firstDot = document.querySelector('.color-dot');
+                if (firstDot) {
+                    firstDot.style.backgroundColor = c;
+                    firstDot.classList.add('active');
+                }
+            }
+            applyBrushStyle();
+        }
+
+        function selectBrush(brush, el) {
+            currentBrush = brush;
+            document.querySelectorAll('.tool-btn').forEach(b => {
+                if (!b.classList.contains('tool-btn-undo')) b.classList.remove('active');
+            });
+            el.classList.add('active');
+            applyBrushStyle();
+        }
+
+        function selectCreature(type, defColor, el) {
+            currentCreatureType = type;
+            updatePromptDisplay();
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            setColor(defColor);
+        }
+
+        function clearCanvas() {
+            saveHistory();
+            dCtx.clearRect(0, 0, 500, 500);
+        }
+
+        // --- 3. 3D Neural Mesh Shader Engine ---
+        function render3DWithFullTails(sketchCanvas, baseColor, type, isRainbow = false) {
+            const outCanvas = document.createElement('canvas');
+            outCanvas.width = 440;
+            outCanvas.height = 440;
+            const ctx = outCanvas.getContext('2d');
+
+            const rawData = sketchCanvas.getContext('2d').getImageData(0, 0, 500, 500).data;
+            let minX = 500, minY = 500, maxX = 0, maxY = 0, hasPixels = false;
+            for (let y = 0; y < 500; y += 4) {
+                for (let x = 0; x < 500; x += 4) {
+                    if (rawData[(y * 500 + x) * 4 + 3] > 25) {
+                        if (x < minX) minX = x;
+                        if (x > maxX) maxX = x;
+                        if (y < minY) minY = y;
+                        if (y > maxY) maxY = y;
+                        hasPixels = true;
+                    }
+                }
+            }
+
+            const cx = hasPixels ? Math.min((minX + maxX) / 2 * 0.8, 190) : 180;
+            const cy = hasPixels ? (minY + maxY) / 2 * 0.8 : 220;
+            const rx = hasPixels ? Math.max((maxX - minX) * 0.36, 55) : 75;
+            const ry = hasPixels ? Math.max((maxY - minY) * 0.34, 42) : 58;
+
+            ctx.save();
+
+            let colorToUse = baseColor;
+            
+            // ถ้าเป็น Rainbow (Level 50) ไม่ต้องทำ Gradient ปกติ จะใช้ Pattern หรือ Gradient สีรุ้งแทน
+            let fillStyleToUse;
+            let tailStyleToUse;
+            
+            if (isRainbow) {
+                // สร้าง Gradient สีรุ้ง
+                const rainbowGrad = ctx.createLinearGradient(cx - rx, cy - ry, cx + rx, cy + ry);
+                rainbowGrad.addColorStop(0, "red");
+                rainbowGrad.addColorStop(0.15, "orange");
+                rainbowGrad.addColorStop(0.33, "yellow");
+                rainbowGrad.addColorStop(0.49, "green");
+                rainbowGrad.addColorStop(0.67, "blue");
+                rainbowGrad.addColorStop(0.84, "indigo");
+                rainbowGrad.addColorStop(1, "violet");
+                fillStyleToUse = rainbowGrad;
+                tailStyleToUse = rainbowGrad;
+                colorToUse = "#8a2be2"; // Fallback color
+            }
+
+            if (type === 'fish') {
+                if(!isRainbow) {
+                    tailStyleToUse = ctx.createRadialGradient(cx + rx * 0.8, cy, 5, cx + rx * 1.5, cy, rx * 0.9);
+                    tailStyleToUse.addColorStop(0, adjustColor(baseColor, 10));
+                    tailStyleToUse.addColorStop(0.6, baseColor);
+                    tailStyleToUse.addColorStop(1, '#ffffff');
+                }
+                
+                ctx.fillStyle = tailStyleToUse;
+                ctx.beginPath();
+                ctx.moveTo(cx + rx * 0.7, cy);
+                ctx.quadraticCurveTo(cx + rx * 1.1, cy - ry * 1.1, cx + rx * 1.6, cy - ry * 0.8);
+                ctx.quadraticCurveTo(cx + rx * 1.25, cy, cx + rx * 1.6, cy + ry * 0.8);
+                ctx.quadraticCurveTo(cx + rx * 1.1, cy + ry * 1.1, cx + rx * 0.7, cy);
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = isRainbow ? "violet" : adjustColor(baseColor, -60);
+                ctx.lineWidth = 3.5;
+                ctx.stroke();
+
+                ctx.fillStyle = isRainbow ? fillStyleToUse : adjustColor(baseColor, -20);
+                ctx.beginPath();
+                ctx.moveTo(cx - rx * 0.3, cy - ry * 0.85);
+                ctx.quadraticCurveTo(cx + rx * 0.1, cy - ry * 1.55, cx + rx * 0.6, cy - ry * 0.7);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(cx, cy + ry * 0.85);
+                ctx.quadraticCurveTo(cx + rx * 0.3, cy + ry * 1.4, cx + rx * 0.5, cy + ry * 0.7);
+                ctx.closePath();
+                ctx.fill();
+
+                if(!isRainbow) {
+                    fillStyleToUse = ctx.createRadialGradient(cx - rx * 0.3, cy - ry * 0.3, 8, cx, cy, rx * 1.1);
+                    fillStyleToUse.addColorStop(0, '#ffffff');
+                    fillStyleToUse.addColorStop(0.2, baseColor);
+                    fillStyleToUse.addColorStop(0.75, adjustColor(baseColor, -40));
+                    fillStyleToUse.addColorStop(1, adjustColor(baseColor, -80));
+                }
+                ctx.fillStyle = fillStyleToUse;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                drawClownfishStripe(ctx, cx - rx * 0.2, cy, rx * 0.2, ry * 0.95);
+                drawClownfishStripe(ctx, cx + rx * 0.45, cy, rx * 0.14, ry * 0.75);
+
+                ctx.fillStyle = isRainbow ? "yellow" : adjustColor(colorToUse, 15);
+                ctx.beginPath();
+                ctx.ellipse(cx - rx * 0.1, cy + ry * 0.2, rx * 0.3, ry * 0.18, Math.PI / 5, 0, Math.PI * 2);
+                ctx.fill();
+                draw3DEye(ctx, cx - rx * 0.52, cy - ry * 0.18, Math.min(rx, ry) * 0.32);
+
+            } else if (type === 'shark') {
+                if(!isRainbow) {
+                    tailStyleToUse = ctx.createRadialGradient(cx + rx, cy, 5, cx + rx * 1.6, cy, rx);
+                    tailStyleToUse.addColorStop(0, baseColor);
+                    tailStyleToUse.addColorStop(0.8, adjustColor(baseColor, -40));
+                    tailStyleToUse.addColorStop(1, '#0f172a');
+                }
+                ctx.fillStyle = tailStyleToUse;
+                ctx.beginPath();
+                ctx.moveTo(cx + rx * 0.7, cy);
+                ctx.lineTo(cx + rx * 1.65, cy - ry * 1.25);
+                ctx.quadraticCurveTo(cx + rx * 1.2, cy, cx + rx * 1.55, cy + ry * 0.9);
+                ctx.lineTo(cx + rx * 0.75, cy);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(cx - rx * 0.15, cy - ry * 0.8);
+                ctx.lineTo(cx + rx * 0.05, cy - ry * 1.75);
+                ctx.quadraticCurveTo(cx + rx * 0.2, cy - ry * 1.2, cx + rx * 0.45, cy - ry * 0.75);
+                ctx.closePath();
+                ctx.fill();
+
+                if(!isRainbow) {
+                    fillStyleToUse = ctx.createRadialGradient(cx - rx * 0.3, cy - ry * 0.3, 10, cx, cy, rx * 1.2);
+                    fillStyleToUse.addColorStop(0, '#ffffff');
+                    fillStyleToUse.addColorStop(0.3, baseColor);
+                    fillStyleToUse.addColorStop(0.85, adjustColor(baseColor, -55));
+                }
+                ctx.fillStyle = fillStyleToUse;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx * 1.15, ry * 0.8, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+                ctx.beginPath();
+                ctx.ellipse(cx - rx * 0.1, cy + ry * 0.35, rx * 0.85, ry * 0.42, 0, 0, Math.PI * 2);
+                ctx.fill();
+                draw3DEye(ctx, cx - rx * 0.65, cy - ry * 0.18, Math.min(rx, ry) * 0.27);
+
+            } else if (type === 'turtle') {
+                ctx.fillStyle = isRainbow ? fillStyleToUse : adjustColor(baseColor, -25);
+                ctx.beginPath();
+                ctx.moveTo(cx + rx * 0.8, cy - ry * 0.1);
+                ctx.lineTo(cx + rx * 1.25, cy);
+                ctx.lineTo(cx + rx * 0.8, cy + ry * 0.1);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx - rx * 0.4, cy - ry * 0.85, rx * 0.55, ry * 0.26, -Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx - rx * 0.4, cy + ry * 0.85, rx * 0.55, ry * 0.26, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx + rx * 0.55, cy - ry * 0.65, rx * 0.32, ry * 0.18, Math.PI / 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx + rx * 0.55, cy + ry * 0.65, rx * 0.32, ry * 0.18, -Math.PI / 6, 0, Math.PI * 2);
+                ctx.fill();
+
+                let headGrad = fillStyleToUse;
+                if(!isRainbow) {
+                    headGrad = ctx.createRadialGradient(cx - rx * 0.95, cy, 5, cx - rx * 0.85, cy, rx * 0.38);
+                    headGrad.addColorStop(0, '#ffffff');
+                    headGrad.addColorStop(0.3, adjustColor(baseColor, 10));
+                    headGrad.addColorStop(1, adjustColor(baseColor, -40));
+                }
+                ctx.fillStyle = headGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx - rx * 0.88, cy, rx * 0.36, ry * 0.32, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                let shellGrad = fillStyleToUse;
+                if(!isRainbow) {
+                    shellGrad = ctx.createRadialGradient(cx - rx * 0.2, cy - ry * 0.3, 10, cx, cy, rx);
+                    shellGrad.addColorStop(0, '#ffffff');
+                    shellGrad.addColorStop(0.25, baseColor);
+                    shellGrad.addColorStop(0.8, adjustColor(baseColor, -50));
+                    shellGrad.addColorStop(1, '#062817');
+                }
+                ctx.fillStyle = shellGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx * 0.45, ry * 0.45, 0, 0, Math.PI * 2);
+                ctx.stroke();
+                draw3DEye(ctx, cx - rx * 0.98, cy - ry * 0.1, Math.min(rx, ry) * 0.22);
+
+            } else if (type === 'blowfish') {
+                ctx.fillStyle = isRainbow ? fillStyleToUse : adjustColor(baseColor, -15);
+                ctx.beginPath();
+                ctx.moveTo(cx + rx * 0.7, cy);
+                ctx.lineTo(cx + rx * 1.3, cy - ry * 0.45);
+                ctx.lineTo(cx + rx * 1.15, cy);
+                ctx.lineTo(cx + rx * 1.3, cy + ry * 0.45);
+                ctx.closePath();
+                ctx.fill();
+
+                let blowGrad = fillStyleToUse;
+                if(!isRainbow) {
+                    blowGrad = ctx.createRadialGradient(cx - rx * 0.2, cy - ry * 0.2, 10, cx, cy, rx);
+                    blowGrad.addColorStop(0, '#ffffff');
+                    blowGrad.addColorStop(0.3, baseColor);
+                    blowGrad.addColorStop(0.85, adjustColor(baseColor, -45));
+                }
+                ctx.fillStyle = blowGrad;
+                ctx.beginPath();
+                ctx.arc(cx, cy, Math.max(rx, ry) * 0.85, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = isRainbow ? "rgba(255,255,255,0.5)" : adjustColor(baseColor, -65);
+                for (let a = 0; a < Math.PI * 2; a += Math.PI / 6) {
+                    const spX = cx + Math.cos(a) * Math.max(rx, ry) * 0.85;
+                    const spY = cy + Math.sin(a) * Math.max(rx, ry) * 0.85;
+                    ctx.beginPath();
+                    ctx.arc(spX, spY, 5.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                draw3DEye(ctx, cx - rx * 0.45, cy - ry * 0.15, Math.min(rx, ry) * 0.32);
+
+            } else if (type === 'octopus') {
+                let octoGrad = fillStyleToUse;
+                if(!isRainbow) {
+                    octoGrad = ctx.createRadialGradient(cx, cy - ry * 0.3, 10, cx, cy, rx);
+                    octoGrad.addColorStop(0, '#ffffff');
+                    octoGrad.addColorStop(0.3, baseColor);
+                    octoGrad.addColorStop(0.85, adjustColor(baseColor, -45));
+                }
+                ctx.fillStyle = isRainbow ? fillStyleToUse : adjustColor(baseColor, -20);
+                for (let i = -3; i <= 3; i++) {
+                    ctx.beginPath();
+                    ctx.ellipse(cx + (i * rx * 0.25), cy + ry * 0.8, rx * 0.12, ry * 0.4, (i * Math.PI) / 12, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.fillStyle = octoGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx * 0.9, ry * 0.95, 0, 0, Math.PI * 2);
+                ctx.fill();
+                draw3DEye(ctx, cx - rx * 0.35, cy, Math.min(rx, ry) * 0.3);
+                draw3DEye(ctx, cx + rx * 0.35, cy, Math.min(rx, ry) * 0.3);
+
+            } else if (type === 'jellyfish') {
+                let jellyGrad = fillStyleToUse;
+                if(!isRainbow) {
+                    jellyGrad = ctx.createRadialGradient(cx, cy - ry * 0.5, 5, cx, cy, rx);
+                    jellyGrad.addColorStop(0, '#ffffff');
+                    jellyGrad.addColorStop(0.3, baseColor);
+                    jellyGrad.addColorStop(1, adjustColor(baseColor, -40));
+                }
+                ctx.strokeStyle = isRainbow ? "white" : adjustColor(baseColor, -20);
+                ctx.lineWidth = Math.min(rx, ry) * 0.15;
+                ctx.lineCap = 'round';
+                for (let i = -2; i <= 2; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(cx + i * rx * 0.35, cy);
+                    ctx.quadraticCurveTo(cx + i * rx * 0.5, cy + ry * 1.2, cx + i * rx * 0.2, cy + ry * 1.8);
+                    ctx.stroke();
+                }
+                ctx.fillStyle = jellyGrad;
+                ctx.beginPath();
+                ctx.moveTo(cx - rx, cy);
+                ctx.bezierCurveTo(cx - rx, cy - ry * 1.6, cx + rx, cy - ry * 1.6, cx + rx, cy);
+                ctx.quadraticCurveTo(cx, cy - ry * 0.2, cx - rx, cy);
+                ctx.fill();
+                draw3DEye(ctx, cx - rx * 0.3, cy - ry * 0.2, Math.min(rx, ry) * 0.2);
+                draw3DEye(ctx, cx + rx * 0.3, cy - ry * 0.2, Math.min(rx, ry) * 0.2);
+
+            } else {
+                let crabGrad = fillStyleToUse;
+                if(!isRainbow) {
+                    crabGrad = ctx.createRadialGradient(cx, cy - ry * 0.2, 10, cx, cy, rx);
+                    crabGrad.addColorStop(0, '#ffffff');
+                    crabGrad.addColorStop(0.3, baseColor);
+                    crabGrad.addColorStop(0.85, adjustColor(baseColor, -50));
+                }
+                ctx.fillStyle = isRainbow ? fillStyleToUse : adjustColor(baseColor, -15);
+                ctx.beginPath();
+                ctx.ellipse(cx - rx * 0.9, cy - ry * 0.7, rx * 0.35, ry * 0.35, -Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(cx + rx * 0.9, cy - ry * 0.7, rx * 0.35, ry * 0.35, Math.PI / 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = crabGrad;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx, ry * 0.75, 0, 0, Math.PI * 2);
+                ctx.fill();
+                draw3DEye(ctx, cx - rx * 0.3, cy - ry * 0.8, Math.min(rx, ry) * 0.25);
+                draw3DEye(ctx, cx + rx * 0.3, cy - ry * 0.8, Math.min(rx, ry) * 0.25);
+            }
+
+            ctx.globalCompositeOperation = 'source-atop';
+            ctx.globalAlpha = 0.22;
+            ctx.drawImage(sketchCanvas, 0, 0, 440, 440);
+
+            ctx.globalAlpha = 1.0;
+            const glossGrad = ctx.createLinearGradient(0, cy - ry * 1.5, 0, cy + ry * 1.5);
+            glossGrad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+            glossGrad.addColorStop(0.4, 'transparent');
+            glossGrad.addColorStop(1, 'rgba(0, 0, 0, 0.4)');
+            ctx.fillStyle = glossGrad;
+            ctx.fillRect(0, 0, 440, 440);
+
+            // วาดมงกุฎให้ King
+            if (isRainbow) {
+                ctx.globalCompositeOperation = 'source-over';
+                drawCrown(ctx, cx, cy - ry * 1.1, rx * 0.6);
+            }
+
+            ctx.restore();
+            return outCanvas.toDataURL('image/png');
+        }
+        
+        function drawCrown(ctx, cx, cy, size) {
+            let cw = size; 
+            let ch = size * 0.8;
+            
+            ctx.fillStyle = "#FFD700"; // สีทอง
+            ctx.beginPath();
+            ctx.moveTo(cx - cw/2, cy); 
+            ctx.lineTo(cx - cw/2 - 5, cy - ch); 
+            ctx.lineTo(cx - cw/4, cy - ch/2); 
+            ctx.lineTo(cx, cy - ch - 10); 
+            ctx.lineTo(cx + cw/4, cy - ch/2); 
+            ctx.lineTo(cx + cw/2 + 5, cy - ch); 
+            ctx.lineTo(cx + cw/2, cy); 
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.fillStyle = "#ff69b4";
+            ctx.beginPath();
+            ctx.arc(cx, cy - ch/2, size/4, 0, Math.PI*2);
+            ctx.fill();
+            
+            ctx.strokeStyle = "#b8860b";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        function drawClownfishStripe(ctx, sx, sy, srx, sry) {
+            ctx.save();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+            ctx.beginPath();
+            ctx.ellipse(sx, sy, srx, sry, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(15, 23, 42, 0.5)';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function draw3DEye(ctx, eyeX, eyeY, eyeR) {
+            ctx.save();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(eyeX, eyeY, eyeR, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(eyeX - 1, eyeY, eyeR * 0.62, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(eyeX - eyeR * 0.25, eyeY - eyeR * 0.25, eyeR * 0.26, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(eyeX + eyeR * 0.18, eyeY + eyeR * 0.18, eyeR * 0.12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function adjustColor(hex, amount) {
+            let col = hex.replace('#', '');
+            if (col.length === 3) col = col.split('').map(c => c + c).join('');
+            const num = parseInt(col, 16);
+            let r = Math.min(255, Math.max(0, (num >> 16) + amount));
+            let g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+            let b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        }
+
+        // --- 4. การส่งผลงานลงตู้ปลา ---
+        function generateAndSendToAquarium() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('active');
+
+            setTimeout(() => {
+                const sketchSrc = dCanvas.toDataURL('image/png');
+                const final3D = render3DWithFullTails(dCanvas, currentColor, currentCreatureType, false);
+                
+                let list = JSON.parse(localStorage.getItem('ocean_3d_creatures_v11') || '[]');
+                const t = I18N[currentLang];
+                const cName = t.creatures[currentCreatureType].name;
+                const defaultName = `${t.defaultPrefix}${cName} #${list.length + 1}`;
+
+                list.push({
+                    id: Date.now() + Math.random().toString(),
+                    src: final3D,
+                    sketchSrc: sketchSrc,
+                    name: defaultName,
+                    type: currentCreatureType,
+                    color: currentColor,
+                    feedCount: 0,
+                    baseSize: 85 + Math.random() * 10 
+                });
+                localStorage.setItem('ocean_3d_creatures_v11', JSON.stringify(list));
+
+                overlay.classList.remove('active');
+                
+                const toast = document.getElementById('toast');
+                toast.innerText = t.toastCreated;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2200);
+
+                clearCanvas();
+            }, 1200);
+        }
+
+        function switchView(id) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if (id === 'viewAqua') {
+                initAquarium();
+            }
+        }
+
+        // --- 5. ตู้ปลาอควาเรียม + เลเยอร์สวยงาม + Drag & Drop + Level Up System ---
+        const aCanvas = document.getElementById('canvasAqua');
+        const aCtx = aCanvas.getContext('2d');
+        let creatures = [];
+        let bubbles = [];
+        let sparkles = [];
+        let foods = [];
+        let animId = null;
+        let isOutlineMode = false;
+
+        let draggedCreature = null;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let lastTouchX = 0;
+        let lastTouchY = 0;
+        
+        let lastTapTime = 0;
+        let lastTapCreature = null;
+
+        const EVOLVE_COLORS = [
+            '#FF3366', '#FF9933', '#FFD700', '#33CC99', '#00CCFF', '#9966FF', '#FF00FF', '#00FFCC', '#FF3300', '#00FF00'
+        ];
+
+        function toggleMode() {
+            isOutlineMode = !isOutlineMode;
+            const t = I18N[currentLang];
+            document.getElementById('btnToggleMode').innerText = isOutlineMode ? t.view3D : t.viewSketch;
+        }
+
+        function resizeAquarium() {
+            aCanvas.width = window.innerWidth;
+            aCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', () => {
+            if (document.getElementById('viewAqua').classList.contains('active')) {
+                resizeAquarium();
+            }
+        });
+
+        function getAquaPointerPos(e) {
+            const rect = aCanvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (aCanvas.width / rect.width),
+                y: (e.clientY - rect.top) * (aCanvas.height / rect.height)
+            };
+        }
+
+        function updateCreatureInStorage(c) {
+            let list = JSON.parse(localStorage.getItem('ocean_3d_creatures_v11') || '[]');
+            const idx = list.findIndex(item => item.id === c.id);
+            if (idx !== -1) {
+                list[idx].name = c.name;
+                list[idx].color = c.color;
+                list[idx].feedCount = c.feedCount;
+                list[idx].src = c.img.src;
+                list[idx].baseSize = c.baseSize;
+                localStorage.setItem('ocean_3d_creatures_v11', JSON.stringify(list));
+            }
+        }
+
+        // Re-render 3D texture when color changes
+        function reRenderCreatureColor(c, newColor, isRainbow=false) {
+            c.color = newColor;
+            const tempImg = new Image();
+            tempImg.src = c.sketchSrc;
+            tempImg.onload = () => {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = 500;
+                tempCanvas.height = 500;
+                const tCtx = tempCanvas.getContext('2d');
+                tCtx.drawImage(tempImg, 0, 0);
+                
+                const new3D = render3DWithFullTails(tempCanvas, newColor, c.type, isRainbow);
+                c.img = new Image();
+                c.img.src = new3D;
+                updateCreatureInStorage(c);
+            };
+        }
+
+        aCanvas.addEventListener('pointerdown', (e) => {
+            const pos = getAquaPointerPos(e);
+            const currentTime = new Date().getTime();
+            let clickedCreature = false;
+
+            for (let i = creatures.length - 1; i >= 0; i--) {
+                const c = creatures[i];
+                if (pos.x >= c.x && pos.x <= c.x + c.size &&
+                    pos.y >= c.y && pos.y <= c.y + c.size) {
+                    
+                    clickedCreature = true;
+                    // --- ระบบ Double Click เพื่อแก้ไขชื่อ เฉพาะตรงกลางตัวปลา ---
+                    const tapLength = currentTime - lastTapTime;
+                    if (tapLength < 400 && tapLength > 0 && lastTapCreature === c) {
+                        const centerX = c.x + c.size / 2;
+                        const centerY = c.y + c.size / 2;
+                        const distToCenter = Math.hypot(pos.x - centerX, pos.y - centerY);
+                        
+                        if (distToCenter < c.size * 0.25) {
+                            const t = I18N[currentLang];
+                            const newName = prompt(t.promptEditName, c.name);
+                            if (newName && newName.trim() !== '') {
+                                c.name = newName.trim();
+                                updateCreatureInStorage(c);
+                            }
+                        }
+                        lastTapTime = 0;
+                        return; 
+                    }
+
+                    lastTapTime = currentTime;
+                    lastTapCreature = c;
+
+                    draggedCreature = c;
+                    draggedCreature.isDragging = true;
+                    dragOffsetX = pos.x - c.x;
+                    dragOffsetY = pos.y - c.y;
+                    lastTouchX = pos.x;
+                    lastTouchY = pos.y;
+
+                    creatures.splice(i, 1);
+                    creatures.push(c);
+
+                    aCanvas.setPointerCapture(e.pointerId);
+                    break;
+                }
+            }
+            
+            if (!clickedCreature) {
+                const emojis = ['🌟', '❤️', '🌸', '🍤', '🥐', '🍓', '🍩', '🧁'];
+                const shape = emojis[Math.floor(Math.random() * emojis.length)];
+                foods.push({
+                    x: pos.x,
+                    y: pos.y, 
+                    vy: 1 + Math.random() * 1.5,
+                    shape: shape,
+                    rot: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 0.1,
+                    size: 22 + Math.random() * 8
+                });
+            }
+        });
+
+        aCanvas.addEventListener('pointermove', (e) => {
+            if (!draggedCreature) return;
+            const pos = getAquaPointerPos(e);
+            draggedCreature.x = pos.x - dragOffsetX;
+            draggedCreature.y = pos.y - dragOffsetY;
+            draggedCreature.vx = (pos.x - lastTouchX) * 0.35;
+            draggedCreature.vy = (pos.y - lastTouchY) * 0.35;
+            lastTouchX = pos.x;
+            lastTouchY = pos.y;
+        });
+
+        function endDragging() {
+            if (draggedCreature) {
+                draggedCreature.isDragging = false;
+                draggedCreature.vx = Math.max(-3, Math.min(3, draggedCreature.vx));
+                if (Math.abs(draggedCreature.vx) < 0.5) {
+                    draggedCreature.vx = (Math.random() * 1.4 + 0.8) * (Math.random() < 0.5 ? 1 : -1);
+                }
+                draggedCreature = null;
+            }
+        }
+        aCanvas.addEventListener('pointerup', endDragging);
+        aCanvas.addEventListener('pointercancel', endDragging);
+
+        function initAquarium() {
+            resizeAquarium();
+            foods = [];
+
+            const data = JSON.parse(localStorage.getItem('ocean_3d_creatures_v11') || '[]');
+            document.getElementById('creatureCount').innerText = data.length;
+
+            creatures = data.map(d => {
+                let img3D = new Image();
+                img3D.src = d.src;
+                let imgOutline = new Image();
+                imgOutline.src = d.sketchSrc || d.src;
+                
+                const baseSize = d.baseSize || (85 + Math.random() * 10);
+                const feedCount = d.feedCount || 0;
+                const level = Math.floor(feedCount / 5);
+                const actualSize = baseSize + (Math.min(level, 5) * 10); 
+                
+                return {
+                    id: d.id,
+                    img: img3D,
+                    imgOutline: imgOutline,
+                    sketchSrc: d.sketchSrc,
+                    name: d.name,
+                    type: d.type || 'fish',
+                    color: d.color || '#f97316',
+                    feedCount: feedCount,
+                    baseSize: baseSize,
+                    size: actualSize,
+                    x: Math.random() * (aCanvas.width - 110),
+                    y: 70 + Math.random() * (aCanvas.height - 180),
+                    vx: (Math.random() * 1.4 + 0.8) * (Math.random() < 0.5 ? 1 : -1),
+                    vy: (Math.random() - 0.5) * 0.4,
+                    wave: Math.random() * Math.PI * 2,
+                    isDragging: false,
+                    glowEffect: 0,
+                    rainbowHue: 0 
+                };
+            });
+
+            // ฟองน้ำฟุ้งๆ
+            bubbles = Array.from({ length: 45 }, () => ({
+                x: Math.random() * aCanvas.width,
+                y: Math.random() * aCanvas.height,
+                r: Math.random() * 4 + 2,
+                v: Math.random() * 1.5 + 0.5,
+                drift: Math.random() * Math.PI * 2
+            }));
+
+            // ดวงดาวฟรุ้งฟริ้งในน้ำ
+            sparkles = Array.from({ length: 30 }, () => ({
+                x: Math.random() * aCanvas.width,
+                y: Math.random() * aCanvas.height,
+                size: Math.random() * 3 + 1,
+                alpha: Math.random(),
+                fadeDir: Math.random() > 0.5 ? 0.02 : -0.02
+            }));
+
+            if (animId) cancelAnimationFrame(animId);
+            runAquaLoop();
+        }
+
+        function drawVectorSeaweed(ctx, x, y, segments, sway, color1, color2) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            for(let i=0; i<segments; i++) {
+                ctx.quadraticCurveTo(x + Math.sin(sway + i) * 15, y - i*25 - 12, x, y - (i+1)*25);
+            }
+            ctx.lineWidth = 14;
+            ctx.strokeStyle = color1;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = color2;
+            ctx.stroke();
+        }
+
+        function runAquaLoop() {
+            if (!document.getElementById('viewAqua').classList.contains('active')) return;
+
+            // พื้นหลังทะเลแบบสว่าง สดใส น่ารัก
+            const grad = aCtx.createLinearGradient(0, 0, 0, aCanvas.height);
+            grad.addColorStop(0, '#bae6fd');
+            grad.addColorStop(0.5, '#7dd3fc');
+            grad.addColorStop(1, '#38bdf8');
+            aCtx.fillStyle = grad;
+            aCtx.fillRect(0, 0, aCanvas.width, aCanvas.height);
+
+            // วาดแสงแดดส่องลงมาในน้ำ
+            aCtx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            aCtx.beginPath();
+            aCtx.moveTo(aCanvas.width * 0.1, 0);
+            aCtx.lineTo(aCanvas.width * 0.4, 0);
+            aCtx.lineTo(aCanvas.width * 0.6, aCanvas.height);
+            aCtx.lineTo(aCanvas.width * 0.05, aCanvas.height);
+            aCtx.fill();
+            aCtx.beginPath();
+            aCtx.moveTo(aCanvas.width * 0.6, 0);
+            aCtx.lineTo(aCanvas.width * 0.9, 0);
+            aCtx.lineTo(aCanvas.width * 0.95, aCanvas.height);
+            aCtx.lineTo(aCanvas.width * 0.45, aCanvas.height);
+            aCtx.fill();
+
+            // เนินทรายใต้ทะเลสีสดใส
+            aCtx.fillStyle = '#fde047';
+            aCtx.beginPath();
+            aCtx.moveTo(0, aCanvas.height - 50);
+            aCtx.quadraticCurveTo(aCanvas.width / 2, aCanvas.height - 120, aCanvas.width, aCanvas.height - 40);
+            aCtx.lineTo(aCanvas.width, aCanvas.height);
+            aCtx.lineTo(0, aCanvas.height);
+            aCtx.fill();
+
+            aCtx.fillStyle = '#fef08a';
+            aCtx.beginPath();
+            aCtx.moveTo(0, aCanvas.height - 20);
+            aCtx.quadraticCurveTo(aCanvas.width / 3, aCanvas.height - 70, aCanvas.width, aCanvas.height - 10);
+            aCtx.lineTo(aCanvas.width, aCanvas.height);
+            aCtx.lineTo(0, aCanvas.height);
+            aCtx.fill();
+
+            // วาดสาหร่ายทะเลแบบ Vector ส่ายไปมา
+            const t = Date.now() / 800;
+            drawVectorSeaweed(aCtx, aCanvas.width * 0.15, aCanvas.height - 10, 5, t, '#15803d', '#4ade80');
+            drawVectorSeaweed(aCtx, aCanvas.width * 0.88, aCanvas.height - 10, 6, t + 1, '#166534', '#22c55e');
+            drawVectorSeaweed(aCtx, aCanvas.width * 0.05, aCanvas.height - 10, 4, t + 2, '#065f46', '#34d399');
+            drawVectorSeaweed(aCtx, aCanvas.width * 0.70, aCanvas.height - 20, 5, t + 0.5, '#be123c', '#fb7185');
+
+            // ของตกแต่งน่ารักๆ
+            aCtx.font = "40px sans-serif";
+            aCtx.fillText("🪨", aCanvas.width * 0.25, aCanvas.height - 20);
+            aCtx.fillText("🐚", aCanvas.width * 0.32, aCanvas.height - 15);
+            aCtx.fillText("🪸", aCanvas.width * 0.78, aCanvas.height - 30);
+            aCtx.fillText("🦀", aCanvas.width * 0.82, aCanvas.height - 5);
+            aCtx.fillText("🌟", aCanvas.width * 0.55, aCanvas.height - 20);
+            aCtx.font = "30px sans-serif";
+            aCtx.fillText("🐠", aCanvas.width * 0.1, aCanvas.height - 80);
+
+            // ประกายฟรุ้งฟริ้ง
+            sparkles.forEach(s => {
+                s.alpha += s.fadeDir;
+                if(s.alpha > 0.8) s.fadeDir = -0.015;
+                if(s.alpha < 0.1) {
+                    s.fadeDir = 0.015;
+                    s.x = Math.random() * aCanvas.width;
+                    s.y = Math.random() * aCanvas.height;
+                }
+                aCtx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                aCtx.beginPath();
+                aCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                aCtx.fill();
+            });
+
+            // ฟองน้ำไหลขึ้น
+            bubbles.forEach(b => {
+                b.drift += 0.05;
+                const driftX = Math.sin(b.drift) * 0.8;
+                aCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                aCtx.beginPath();
+                aCtx.arc(b.x + driftX, b.y, b.r, 0, Math.PI * 2);
+                aCtx.fill();
+                aCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                aCtx.beginPath();
+                aCtx.arc(b.x + driftX - b.r*0.3, b.y - b.r*0.3, b.r*0.25, 0, Math.PI * 2);
+                aCtx.fill();
+
+                b.y -= b.v;
+                if (b.y < -10) {
+                    b.y = aCanvas.height + 10;
+                    b.x = Math.random() * aCanvas.width;
+                }
+            });
+
+            // วาดอาหารปลา & เอฟเฟกต์กินอาหาร
+            for (let i = foods.length - 1; i >= 0; i--) {
+                let f = foods[i];
+                f.y += f.vy;
+                f.rot += f.rotSpeed;
+                
+                if (f.isEffect) {
+                    f.size *= 0.97;
+                    f.alpha = (f.alpha || 1) * 0.94;
+                }
+                
+                aCtx.save();
+                aCtx.translate(f.x, f.y);
+                aCtx.rotate(f.rot);
+                if (f.isEffect) aCtx.globalAlpha = f.alpha;
+                aCtx.font = f.size + "px sans-serif";
+                aCtx.textAlign = "center";
+                aCtx.textBaseline = "middle";
+                aCtx.fillText(f.shape, 0, 0);
+                aCtx.restore();
+
+                let eaten = false;
+                if (!f.isEffect) {
+                    for (let c of creatures) {
+                        if (Math.hypot(c.x + c.size/2 - f.x, c.y + c.size/2 - f.y) < c.size/1.8) {
+                            eaten = true;
+                            
+                            c.feedCount = (c.feedCount || 0) + 1;
+                            const currentLevel = Math.floor(c.feedCount / 5);
+
+                            // กินอาหารไปเรื่อยๆ -> เปลี่ยนสีตลอดเวลาแม้อาจจะไม่โตขึ้น
+                            const availableColors = EVOLVE_COLORS.filter(col => col !== c.color);
+                            const newColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+                            
+                            // เช็คการเติบโต (โตสุดที่ Level 5)
+                            if (currentLevel <= 5 && c.feedCount % 5 === 0) {
+                                c.size = c.baseSize + (currentLevel * 10);
+                            }
+
+                            // ถึง Level 50 = เป็นคิง รุ้ง
+                            if (currentLevel >= 50) {
+                                c.glowEffect = 10; // เรืองแสงตลอด
+                                // ให้แอนิเมทสีใน Loop
+                            } else {
+                                // ยังไม่ถึง 50 เปลี่ยนสีพาสเทลปกติ
+                                reRenderCreatureColor(c, newColor, false);
+                            }
+
+                            // เอฟเฟกต์ Level up หรือ กินอาหาร
+                            if (c.feedCount % 5 === 0) {
+                                c.glowEffect = 40; 
+                                for (let k = 0; k < 8; k++) {
+                                    foods.push({
+                                        x: c.x + c.size/2 + (Math.random() - 0.5) * 40,
+                                        y: c.y + c.size/2 + (Math.random() - 0.5) * 40,
+                                        vy: - (Math.random() * 2 + 1.5),
+                                        shape: '✨',
+                                        rot: Math.random() * Math.PI,
+                                        rotSpeed: 0.1,
+                                        size: 28,
+                                        isEffect: true,
+                                        alpha: 1
+                                    });
+                                }
+                            } else {
+                                foods.push({
+                                    x: c.x + c.size/2,
+                                    y: c.y,
+                                    vy: -1.5,
+                                    shape: '❤️',
+                                    rot: 0,
+                                    rotSpeed: 0,
+                                    size: 24,
+                                    isEffect: true,
+                                    alpha: 1
+                                });
+                            }
+
+                            updateCreatureInStorage(c);
+                            break;
+                        }
+                    }
+                }
+
+                if (eaten || f.y > aCanvas.height + 50 || (f.isEffect && f.alpha < 0.1)) {
+                    foods.splice(i, 1);
+                }
+            }
+
+            // สัตว์น้ำ 3D หรือ ลายเส้น
+            creatures.forEach(c => {
+                if (!c.isDragging) {
+                    if (foods.length > 0) {
+                        let closestFood = null;
+                        let minDist = Infinity;
+                        for (let f of foods) {
+                            if (!f.isEffect) {
+                                let dist = Math.hypot((c.x + c.size/2) - f.x, (c.y + c.size/2) - f.y);
+                                if (dist < minDist) {
+                                    minDist = dist;
+                                    closestFood = f;
+                                }
+                            }
+                        }
+                        if (closestFood && minDist < 450) {
+                            let dx = closestFood.x - (c.x + c.size/2);
+                            let dy = closestFood.y - (c.y + c.size/2);
+                            let angle = Math.atan2(dy, dx);
+                            
+                            c.vx += Math.cos(angle) * 0.09;
+                            c.vy += Math.sin(angle) * 0.09;
+                            
+                            let speed = Math.hypot(c.vx, c.vy);
+                            if (speed > 2.8) {
+                                c.vx = (c.vx / speed) * 2.8;
+                                c.vy = (c.vy / speed) * 2.8;
+                            }
+                        }
+                    }
+
+                    c.x += c.vx;
+                    c.wave += 0.03;
+                    c.y += Math.sin(c.wave) * 0.6 + c.vy;
+
+                    if (c.x < 10) {
+                        c.x = 10;
+                        c.vx = Math.abs(c.vx);
+                    } else if (c.x + c.size > aCanvas.width - 10) {
+                        c.x = aCanvas.width - 10 - c.size;
+                        c.vx = -Math.abs(c.vx);
+                    }
+
+                    if (c.y < 60) {
+                        c.y = 60;
+                        c.vy = Math.abs(c.vy);
+                    } else if (c.y + c.size > aCanvas.height - 100) {
+                        c.y = aCanvas.height - 100 - c.size;
+                        c.vy = -Math.abs(c.vy);
+                    }
+                }
+
+                // แอนิเมชันสีรุ้งสำหรับ Level 50+
+                const currentLevel = Math.floor(c.feedCount / 5);
+                if(currentLevel >= 50 && !isOutlineMode) {
+                    c.rainbowHue = (c.rainbowHue + 5) % 360;
+                    const rainbowColor = `hsl(${c.rainbowHue}, 100%, 65%)`;
+                    // สร้าง texture ใหม่เฟรมต่อเฟรม (อาจจะกินสเปคนิดนึง)
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = 500;
+                    tempCanvas.height = 500;
+                    const tCtx = tempCanvas.getContext('2d');
+                    tCtx.drawImage(c.imgOutline, 0, 0);
+                    c.img.src = render3DWithFullTails(tempCanvas, rainbowColor, c.type, true);
+                    
+                    // ปล่อยแสงระยิบระยับตลอดเวลา
+                    if(Math.random() < 0.15) {
+                        sparkles.push({
+                            x: c.x + Math.random() * c.size,
+                            y: c.y + Math.random() * c.size,
+                            size: Math.random() * 4 + 2,
+                            alpha: 1,
+                            fadeDir: -0.02
+                        });
+                    }
+                }
+
+                aCtx.save();
+                
+                if (c.glowEffect && c.glowEffect > 0) {
+                    aCtx.shadowColor = currentLevel >= 50 ? `hsl(${c.rainbowHue}, 100%, 75%)` : '#fbbf24';
+                    aCtx.shadowBlur = 30;
+                    c.glowEffect--;
+                } else if (c.isDragging) {
+                    aCtx.shadowColor = '#f59e0b';
+                    aCtx.shadowBlur = 24;
+                } else {
+                    aCtx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+                    aCtx.shadowBlur = 10;
+                }
+
+                const renderSize = c.isDragging ? c.size * 1.15 : c.size;
+                const offsetShift = c.isDragging ? (renderSize - c.size) / 2 : 0;
+                const imgToDraw = isOutlineMode ? c.imgOutline : c.img;
+
+                if (c.vx < 0) {
+                    if (imgToDraw.complete) aCtx.drawImage(imgToDraw, c.x - offsetShift, c.y - offsetShift, renderSize, renderSize);
+                } else {
+                    aCtx.translate(c.x + c.size + offsetShift, c.y - offsetShift);
+                    aCtx.scale(-1, 1);
+                    if (imgToDraw.complete) aCtx.drawImage(imgToDraw, 0, 0, renderSize, renderSize);
+                }
+                aCtx.restore();
+
+                // ป้ายชื่อน่ารักๆ
+                aCtx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+                aCtx.font = '600 12px "Mali", "Noto Sans SC", sans-serif';
+                aCtx.textAlign = 'center';
+                
+                const t = I18N[currentLang];
+                let levelStr = currentLevel + 1;
+                if(currentLevel >= 50) levelStr = t.lvlKing;
+                else if (currentLevel >= 5) levelStr = t.lvlMax;
+                
+                const levelText = c.feedCount >= 5 ? ` Lv.${levelStr}` : '';
+                const displayTitle = `${c.name}${levelText}`;
+                
+                const textWidth = aCtx.measureText(displayTitle).width;
+                
+                aCtx.beginPath();
+                aCtx.roundRect(c.x + (c.size/2) - (textWidth/2) - 8, c.y - 20, textWidth + 16, 20, 10);
+                aCtx.fill();
+                
+                aCtx.fillStyle = currentLevel >= 50 ? '#8b5cf6' : (currentLevel >= 5 ? '#e11d48' : '#d81b60');
+                aCtx.fillText(displayTitle, c.x + (c.size / 2), c.y - 6);
+            });
+
+            animId = requestAnimationFrame(runAquaLoop);
+        }
+
+        function resetAquarium() {
+            const t = I18N[currentLang];
+            if (confirm(t.confirmReset)) {
+                localStorage.removeItem('ocean_3d_creatures_v11');
+                initAquarium();
+            }
+        }
+    </script>
+</body>
+</html>
